@@ -336,6 +336,7 @@ button { color: inherit; font: inherit; }
   display: flex;
   min-width: min(78vw, 18rem);
   min-height: 3rem;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   gap: .65rem;
@@ -444,14 +445,18 @@ button { color: inherit; font: inherit; }
 @keyframes section-reveal { from { opacity: 0; transform: translateY(1.5rem); } }
 
 @media (max-height: 900px) {
-  .wedding-details { padding-top: 3.3rem; padding-bottom: 1.25rem; }
-  .section-flower { margin-bottom: .7rem; }
-  .wedding-details h2 { margin: .5rem 0 1.2rem; }
-  .detail-label { margin-top: 1rem; }
-  .detail-label--address { margin-top: .65rem; }
-  .event-card { padding-block: .8rem; }
-  .photo-share-card { min-height: 3.5rem; margin-top: .65rem; padding-block: .55rem; }
+  .wedding-details { justify-content: flex-start; padding-top: 1.25rem; padding-bottom: .8rem; }
+  .wedding-details::before { height: 1rem; }
+  .section-flower { width: 1.9rem; margin-bottom: .35rem; }
+  .wedding-details h2 { margin: .25rem 0 .9rem; font-size: clamp(2.35rem, 10.5vw, 4rem); }
+  .countdown-unit { padding-block: .85rem .75rem; }
+  .detail-label { margin-top: .7rem; }
+  .detail-label--address { margin-top: .5rem; }
+  .event-card { padding-block: .65rem; }
+  .photo-share-card { min-height: 3.25rem; margin-top: .5rem; padding-block: .45rem; }
   .venue-note strong { font-size: 1.55rem; }
+  .venue-note p { line-height: 1.35; }
+  .page-cue { min-height: 2.8rem; padding-block: .6rem; }
 }
 
 @media (max-height: 700px) {
@@ -460,7 +465,7 @@ button { color: inherit; font: inherit; }
   .intro h1 { font-size: 2.6rem; }
   .envelope-scene { width: min(68vh, 24rem); }
   .after-note { margin-top: .6rem; }
-  .wedding-details { justify-content: flex-start; padding-top: 2.8rem; }
+  .wedding-details { justify-content: flex-start; padding-top: .9rem; }
   .section-flower { margin-bottom: .65rem; }
   .detail-label { margin-top: .85rem; }
   .detail-label--address { margin-top: .65rem; }
