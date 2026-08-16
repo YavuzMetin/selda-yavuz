@@ -1,269 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500&family=Montserrat:wght@400;500;600&display=swap');
+
 :root {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  color: #fff9f7;
-  background: #7d1233;
+  font-family: 'Montserrat', sans-serif;
+  color: #3f453b;
+  background: #e8e1d4;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
+body { overflow: hidden; }
+button { color: inherit; font: inherit; }
 
-html {
-  min-width: 320px;
-  min-height: 100%;
-}
-
-body {
-  min-width: 320px;
-  margin: 0;
-  min-height: 100vh;
-  min-height: 100svh;
-  overflow-x: hidden;
-}
-
-#root {
-  min-height: 100vh;
-  min-height: 100svh;
-}
-
-.love-page {
+.invitation-page {
   position: relative;
   isolation: isolate;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  background: linear-gradient(135deg, #eee8dc, #ddd3c3);
+}
+
+.envelope-hero {
+  position: relative;
   display: grid;
   min-height: 100vh;
   min-height: 100svh;
+  height: 100vh;
+  height: 100svh;
+  flex: 0 0 100svh;
+  grid-template-rows: 1fr auto 1fr;
   place-items: center;
   overflow: hidden;
-  padding: clamp(1.25rem, 5vw, 3rem);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  padding: clamp(1rem, 4vh, 2.5rem) 1rem;
   background:
-    radial-gradient(circle at 50% 20%, rgba(255, 190, 194, 0.32), transparent 35%),
-    linear-gradient(145deg, #4b0923 0%, #9f1743 48%, #5a0a29 100%);
+    radial-gradient(circle at 50% 48%, rgba(255,255,255,.9) 0, rgba(247,243,235,.7) 34%, transparent 65%),
+    linear-gradient(135deg, #eee8dc, #ddd3c3);
 }
 
-.love-page::before {
-  position: absolute;
-  z-index: -1;
-  width: min(120vw, 70rem);
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 6rem rgba(255, 255, 255, 0.018),
-    0 0 0 12rem rgba(255, 255, 255, 0.012);
-  content: "";
-}
-
-.glow {
-  position: absolute;
-  z-index: -1;
-  width: 16rem;
-  height: 16rem;
-  border-radius: 50%;
-  background: #ff7895;
-  filter: blur(85px);
-  opacity: 0.3;
-}
-
-.glow--one {
-  top: -7rem;
-  right: -4rem;
-}
-
-.glow--two {
-  bottom: -8rem;
-  left: -5rem;
-  background: #ffb07c;
-}
-
-.love-card {
-  position: relative;
-  width: min(100%, 42rem);
-  padding: clamp(3.5rem, 9vw, 6rem) clamp(1.4rem, 7vw, 4.5rem)
-    clamp(2.25rem, 7vw, 4rem);
-  overflow: hidden;
-  text-align: center;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.07));
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: clamp(1.75rem, 5vw, 3rem);
-  box-shadow:
-    0 2rem 5rem rgba(46, 0, 17, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  animation: card-arrival 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.love-card::after {
+.paper-noise {
   position: absolute;
   inset: 0;
+  z-index: -1;
+  opacity: .24;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.17'/%3E%3C/svg%3E");
   pointer-events: none;
-  background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.08), transparent 70%);
-  content: "";
 }
 
-.heart-badge {
+.botanical {
+  position: absolute;
+  z-index: -1;
+  color: rgba(91, 108, 78, .16);
+  font-family: Georgia, serif;
+  font-size: clamp(11rem, 30vw, 28rem);
+  line-height: 1;
+  user-select: none;
+}
+
+.botanical--left { bottom: -7%; left: -3%; transform: rotate(-30deg); }
+.botanical--right { top: -9%; right: -3%; transform: rotate(148deg); }
+
+.intro { align-self: end; margin-bottom: clamp(1rem, 3vh, 2rem); text-align: center; transition: .7s ease; }
+.kicker, .hint, .after-note { margin: 0; font-size: .62rem; letter-spacing: .26em; text-transform: uppercase; }
+.kicker { color: #78806f; }
+.intro h1 { margin: .15rem 0 .45rem; color: #393f36; font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(2.7rem, 8vw, 4.8rem); font-weight: 400; line-height: 1; }
+.hint { color: #9b8268; font-size: .55rem; animation: breathe 2.2s ease-in-out infinite; }
+
+.envelope-scene {
+  position: relative;
+  width: min(86vw, 29rem);
+  aspect-ratio: 1.42;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  perspective: 1200px;
+  transform: translateY(0);
+  transition: transform .9s cubic-bezier(.2,.7,.2,1) .35s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.envelope-scene:focus-visible { filter: drop-shadow(0 0 0.5rem rgba(106, 117, 91, .65)); }
+.envelope-shadow { position: absolute; right: 7%; bottom: -7%; left: 7%; height: 12%; border-radius: 50%; background: rgba(64, 52, 39, .2); filter: blur(13px); transition: .8s ease; }
+.envelope { position: absolute; inset: 0; transform-style: preserve-3d; filter: drop-shadow(0 1.25rem 1.1rem rgba(72, 60, 45, .18)); }
+
+.envelope-back, .envelope-pocket, .envelope-flap {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: .25rem;
+}
+
+.envelope-back { z-index: 1; background: #e3d4bd; }
+.envelope-pocket { z-index: 4; overflow: hidden; background: linear-gradient(150deg, #e9dcc7, #d8c5a8); clip-path: polygon(0 27%, 50% 67%, 100% 27%, 100% 100%, 0 100%); }
+.envelope-pocket::before, .envelope-pocket::after { position: absolute; bottom: 0; width: 72%; height: 76%; background: rgba(255,255,255,.12); content: ''; }
+.envelope-pocket::before { left: 0; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.envelope-pocket::after { right: 0; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+
+.envelope-flap {
+  z-index: 6;
+  height: 58%;
+  transform: rotateX(0deg);
+  transform-origin: top center;
+  background: linear-gradient(175deg, #eee3d2, #d9c7ac);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transition: transform .8s cubic-bezier(.3, .1, .2, 1), z-index 0s .35s;
+}
+
+.wax-seal {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  z-index: 7;
+  display: flex;
+  width: clamp(3.1rem, 12vw, 4rem);
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  gap: .08rem;
+  color: #e7d5aa;
+  background: radial-gradient(circle at 35% 30%, #9f6a5b, #75443d 66%, #633631);
+  border: 2px solid rgba(255,255,255,.15);
+  border-radius: 47% 53% 50% 46%;
+  box-shadow: 0 .3rem .45rem rgba(65, 39, 28, .25), inset 0 0 0 .25rem rgba(73,35,31,.2);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  transition: opacity .3s .15s, transform .5s;
+}
+.wax-seal b { font-size: .65em; font-weight: 400; }
+.wax-seal i { font-style: italic; }
+
+.invitation-card {
+  position: absolute;
+  z-index: 2;
+  right: 7%;
+  bottom: 3%;
+  left: 7%;
+  display: block;
+  height: 138%;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  border: 1px solid rgba(131, 112, 82, .18);
+  border-radius: .15rem;
+  background: #f9f5eb;
+  box-shadow: 0 .5rem 1.5rem rgba(66,54,40,.13);
+  transform: translateY(35%);
+  transition:
+    transform 1s cubic-bezier(.2,.7,.2,1) .18s,
+    opacity .12s ease .95s,
+    visibility 0s linear 1.07s;
+}
+
+.card-art { position: absolute; inset: 0; background: url('/wedding-botanicals.png') center/cover no-repeat; opacity: .95; }
+.card-content { position: absolute; inset: 0; display: flex; align-items: center; flex-direction: column; justify-content: center; padding: 12% 11%; text-align: center; }
+.card-overline { margin-bottom: 6%; color: #8b7762; font-size: clamp(.38rem, 1.55vw, .62rem); font-weight: 600; letter-spacing: .3em; text-transform: uppercase; }
+.names { display: flex; align-items: center; flex-direction: column; color: #46503f; font-family: 'Cormorant Garamond', Georgia, serif; line-height: .78; }
+.names i { font-size: clamp(2.15rem, 9vw, 4.15rem); font-weight: 500; }
+.names b { margin: .35rem 0 .2rem; color: #a58368; font-size: clamp(1rem, 3.5vw, 1.55rem); font-weight: 400; }
+.card-copy { margin-top: 7%; color: #64665e; font-family: 'Cormorant Garamond', serif; font-size: clamp(.64rem, 2.45vw, .94rem); line-height: 1.45; }
+.card-rule { margin: 5% 0 3%; color: #a58b70; font-size: .55rem; }
+.date { color: #424a3e; font-family: 'Cormorant Garamond', serif; font-size: clamp(.9rem, 3.2vw, 1.3rem); font-weight: 500; letter-spacing: .06em; }
+.details { margin-top: 2%; color: #777268; font-size: clamp(.42rem, 1.55vw, .6rem); letter-spacing: .1em; line-height: 1.65; text-transform: uppercase; }
+
+.after-note { display: flex; align-self: start; align-items: center; flex-direction: column; gap: .15rem; margin-top: clamp(1.2rem, 4vh, 2.4rem); padding: .5rem; color: #7d7569; border: 0; background: none; font-size: .5rem; text-align: center; transition: .5s ease; }
+.after-note:disabled { margin-top: .65rem; color: #665e53; font-size: clamp(.68rem, 2.8vw, .82rem); font-weight: 600; cursor: default; }
+.after-note:not(:disabled) { cursor: pointer; }
+.after-note i { font-family: Georgia, serif; font-size: 1.4rem; font-style: normal; line-height: .65; animation: float-down 1.7s ease-in-out infinite; }
+
+.is-open .envelope-flap { z-index: 1; transform: rotateX(180deg); transition: transform .8s cubic-bezier(.3,.1,.2,1), z-index 0s .35s; }
+.is-open .wax-seal { opacity: 0; transform: translate(-50%, -95%) scale(.45) rotate(12deg); transition-delay: 0s; }
+.is-open .invitation-card {
+  z-index: 5;
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(-84%);
+  transition:
+    transform 1s cubic-bezier(.2,.7,.2,1) .65s,
+    opacity .18s ease .65s,
+    visibility 0s linear .65s;
+}
+.is-open .envelope-scene { transform: translateY(clamp(4.25rem, 12svh, 7rem)); }
+.is-open .envelope-shadow { transform: scaleX(1.08); opacity: .65; }
+.is-open .intro { opacity: .3; transform: translateY(-.35rem); }
+
+@keyframes breathe { 50% { opacity: .42; } }
+@keyframes float-down { 50% { transform: translateY(.28rem); } }
+
+.wedding-details {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  height: 100vh;
+  height: 100svh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4.5rem 1.15rem 2.5rem;
+  overflow: hidden;
+  color: #3f453b;
+  background:
+    linear-gradient(rgba(248,245,237,.93), rgba(238,231,218,.97)),
+    url('/wedding-botanicals.png') center/cover;
+  text-align: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  animation: section-reveal .8s ease both;
+}
+
+.wedding-details::before {
   position: absolute;
   top: 0;
   left: 50%;
-  display: grid;
-  width: clamp(4.5rem, 15vw, 5.75rem);
-  aspect-ratio: 1;
-  place-items: center;
-  color: #a20f3c;
-  background: #fff6f3;
-  border-radius: 0 0 50% 50%;
-  box-shadow: 0 0.75rem 2rem rgba(69, 4, 29, 0.24);
-  transform: translateX(-50%);
+  width: 1px;
+  height: 3.5rem;
+  background: #b69c7f;
+  content: '';
 }
 
-.heart-badge span {
-  display: block;
-  font-size: clamp(2rem, 7vw, 2.75rem);
-  line-height: 1;
-  animation: heartbeat 1.8s ease-in-out infinite;
+.section-flower { display: grid; width: 2.25rem; aspect-ratio: 1; margin-bottom: 1.2rem; place-items: center; color: #9e856b; border: 1px solid rgba(158,133,107,.45); border-radius: 50%; font-size: .55rem; }
+.wedding-details > .kicker { color: #8a7b69; font-size: clamp(.6rem, 2.4vw, .72rem); }
+.wedding-details h2 { margin: .75rem 0 2rem; color: #3e463b; font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(2.55rem, 12vw, 4.5rem); font-weight: 400; line-height: .88; }
+.wedding-details h2 i { color: #8c745f; font-weight: 400; }
+
+.countdown { display: grid; width: min(100%, 30rem); grid-template-columns: repeat(4, 1fr); gap: .4rem; }
+.countdown-unit { position: relative; padding: 1.15rem .15rem 1rem; background: rgba(255,255,255,.52); border: 1px solid rgba(136,120,97,.18); }
+.countdown-unit strong { display: block; color: #46503f; font-family: 'Cormorant Garamond', serif; font-size: clamp(2.15rem, 10vw, 3.25rem); font-weight: 400; font-variant-numeric: tabular-nums; line-height: 1; }
+.countdown-unit span { display: block; margin-top: .55rem; color: #8c8174; font-size: clamp(.48rem, 2.15vw, .62rem); font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+
+.detail-label { display: flex; width: min(82%, 19rem); align-items: center; gap: .7rem; margin-top: clamp(1.5rem, 3.5vh, 2.3rem); color: #958471; }
+.detail-label i { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(145,125,101,.52)); }
+.detail-label i:last-child { transform: scaleX(-1); }
+.detail-label span { font-size: .58rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; }
+.detail-label--address { margin-top: 1rem; }
+
+.event-card { display: flex; width: min(100%, 25rem); align-items: center; justify-content: center; margin: .55rem 0 0; padding: 1.05rem 1.35rem; background: rgba(249,246,238,.7); border-block: 1px solid rgba(143,124,99,.28); }
+.event-card p { flex: 1; margin: 0; }
+.event-card span { display: block; color: #46503f; font-family: 'Cormorant Garamond', serif; font-size: 3.15rem; font-weight: 400; line-height: .85; }
+.event-card b { display: block; color: #8c745f; font-family: 'Cormorant Garamond', serif; font-size: 1.48rem; font-weight: 500; }
+.event-card small { display: block; margin-top: .48rem; color: #81786d; font-size: .57rem; letter-spacing: .1em; text-transform: uppercase; }
+.event-divider { width: 1px; height: 4rem; margin-inline: 1rem; background: rgba(143,124,99,.28); }
+
+.venue-note { display: flex; align-items: center; flex-direction: column; gap: .25rem; margin-top: .55rem; color: #475143; }
+.venue-note strong { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.75rem; font-weight: 500; }
+.venue-note p { margin: 0; color: #81786d; font-size: clamp(.56rem, 2.35vw, .68rem); letter-spacing: .035em; line-height: 1.55; }
+
+.page-cue { display: flex; align-items: center; flex-direction: column; gap: .05rem; margin-top: auto; padding: .5rem 1rem; color: #877b6d; border: 0; background: none; font-size: .5rem; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; }
+.page-cue i { font-family: Georgia, serif; font-size: 1.35rem; font-style: normal; line-height: .7; animation: float-down 1.7s ease-in-out infinite; }
+
+.location-page { position: relative; display: flex; height: 100vh; height: 100svh; min-height: 100vh; min-height: 100svh; align-items: center; flex-direction: column; justify-content: center; padding: 3.2rem 1rem 0; overflow: hidden; background: linear-gradient(145deg, #dde2d8, #cbd3c5); scroll-snap-align: start; scroll-snap-stop: always; }
+.location-page::before { position: absolute; top: -12rem; right: -11rem; width: 25rem; aspect-ratio: 1; background: rgba(255,255,255,.28); border-radius: 50%; content: ''; }
+.location-block { position: relative; z-index: 1; width: min(100%, 31rem); padding: 2.4rem 1rem 1.5rem; background: #f5f0e9; color: #485044; box-shadow: 0 1.4rem 3rem rgba(61,62,50,.18); }
+.location-block .kicker { color: #9b846d; font-size: .52rem; }
+.location-block h3 { margin: .55rem 0 .7rem; font-family: 'Cormorant Garamond', serif; font-size: 2.3rem; font-weight: 400; }
+.location-block > p:not(.kicker) { max-width: 18rem; margin: 0 auto 1.6rem; color: #817b72; font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.5; }
+
+.map-preview { position: relative; display: block; width: 100%; aspect-ratio: 1.62; overflow: hidden; color: inherit; background: #eee9e2; border: 1px solid rgba(97,108,91,.16); border-radius: .8rem; box-shadow: inset 0 0 2rem rgba(255,255,255,.5); text-decoration: none; }
+.map-preview svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map-preview svg path { fill: none; stroke: #d5d8d3; stroke-width: 3; }
+.map-green { position: absolute; background: #dce6d1; opacity: .9; }
+.map-green--one { top: 0; right: 0; width: 27%; height: 37%; clip-path: polygon(30% 0,100% 0,100% 100%,0 75%); }
+.map-green--two { bottom: 0; left: 0; width: 24%; height: 29%; clip-path: polygon(0 0,70% 28%,100% 100%,0 100%); }
+.map-pin { position: absolute; top: 50%; left: 50%; width: 2.2rem; height: 2.2rem; background: #b96c60; border: .28rem solid #f8f2ea; border-radius: 50% 50% 50% 0; box-shadow: 0 .3rem .65rem rgba(83,62,54,.25); transform: translate(-50%,-35%) rotate(-45deg); }
+.map-pin i { position: absolute; inset: 25%; background: #f8e8df; border-radius: 50%; }
+.map-action { position: absolute; top: 50%; left: 50%; display: grid; width: 4.4rem; aspect-ratio: 1; place-items: center; color: #6e746c; background: rgba(255,255,255,.92); border: 1px solid rgba(68,75,65,.18); border-radius: 50%; box-shadow: 0 .5rem 1.2rem rgba(65,65,57,.2); font-size: 1.65rem; transform: translate(-50%,-50%) rotate(-45deg); transition: transform .25s ease, background .25s ease; }
+.map-preview:hover .map-action, .map-preview:focus-visible .map-action { background: #fff; transform: translate(-50%,-50%) rotate(-45deg) scale(1.07); }
+.map-preview small { position: absolute; right: .55rem; bottom: .4rem; color: #888b85; font-size: .4rem; letter-spacing: .04em; }
+
+.directions-button { display: inline-flex; min-height: 3.3rem; align-items: center; justify-content: center; gap: .7rem; margin-top: 1.3rem; padding: .8rem 1.6rem; color: #f7f2e9; background: #697266; border-radius: 999px; font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; transition: transform .2s ease, background .2s ease; }
+.directions-button span { font-size: 1.05rem; transform: rotate(45deg); }
+.directions-button:hover, .directions-button:focus-visible { background: #4f594d; transform: translateY(-2px); }
+
+.location-page footer { display: flex; position: relative; z-index: 1; align-items: center; flex-direction: column; padding: 2.6rem 1rem 1.4rem; color: #53604e; font-family: 'Cormorant Garamond', serif; }
+.location-page footer span { font-size: 2rem; font-style: italic; line-height: .72; }
+.location-page footer i { margin: .3rem 0; color: #9e836a; font-size: 1rem; font-weight: 400; }
+.location-page footer small { margin-top: 1rem; font-family: 'Montserrat', sans-serif; font-size: .48rem; letter-spacing: .28em; }
+
+@keyframes section-reveal { from { opacity: 0; transform: translateY(1.5rem); } }
+
+@media (max-height: 700px) {
+  .envelope-hero { padding-block: .7rem; }
+  .intro { margin-bottom: .4rem; }
+  .intro h1 { font-size: 2.6rem; }
+  .envelope-scene { width: min(68vh, 24rem); }
+  .after-note { margin-top: .6rem; }
+  .wedding-details { justify-content: flex-start; padding-top: 2.8rem; }
+  .section-flower { margin-bottom: .65rem; }
+  .detail-label { margin-top: .85rem; }
+  .detail-label--address { margin-top: .65rem; }
+  .event-card { padding-block: .75rem; }
+  .event-card span { font-size: 2.55rem; }
+  .venue-note strong { font-size: 1.45rem; }
+  .page-cue { margin-top: .2rem; }
+  .location-page { justify-content: flex-start; padding-top: 1.7rem; }
+  .location-block { padding-top: 1.5rem; }
+  .location-page footer { padding-top: 1.5rem; }
 }
 
-.eyebrow {
-  margin: 0 0 0.85rem;
-  color: #ffd8d3;
-  font-size: clamp(0.7rem, 2.7vw, 0.82rem);
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-h1 {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.5rem, 10vw, 5.25rem);
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  line-height: 0.96;
-  text-wrap: balance;
-}
-
-h1 span {
-  display: block;
-  margin-top: 0.16em;
-  color: #ffd4d5;
-  font-size: 0.68em;
-  font-style: italic;
-  line-height: 1.08;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  width: min(15rem, 70%);
-  margin: clamp(1.5rem, 5vw, 2.25rem) auto;
-  color: #ffb9be;
-}
-
-.divider i {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 218, 216, 0.65));
-}
-
-.divider i:last-child {
-  transform: scaleX(-1);
-}
-
-.divider span {
-  font-size: 0.8rem;
-}
-
-.note {
-  margin: 0;
-  color: rgba(255, 250, 247, 0.88);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1rem, 3.8vw, 1.3rem);
-  line-height: 1.7;
-}
-
-.signature {
-  margin: clamp(1.6rem, 5vw, 2.25rem) 0 0;
-  color: #ffc4c6;
-  font-size: clamp(0.76rem, 2.7vw, 0.9rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
-.floating-hearts span {
-  position: absolute;
-  bottom: -3rem;
-  z-index: -1;
-  color: rgba(255, 216, 218, 0.22);
-  font-size: clamp(1rem, 3vw, 2rem);
-  animation: float-up 12s linear infinite;
-}
-
-.floating-hearts span:nth-child(1) { left: 8%; animation-delay: -2s; }
-.floating-hearts span:nth-child(2) { left: 22%; animation-delay: -8s; animation-duration: 15s; }
-.floating-hearts span:nth-child(3) { left: 43%; animation-delay: -5s; animation-duration: 10s; }
-.floating-hearts span:nth-child(4) { left: 64%; animation-delay: -10s; animation-duration: 14s; }
-.floating-hearts span:nth-child(5) { left: 81%; animation-delay: -4s; animation-duration: 11s; }
-.floating-hearts span:nth-child(6) { left: 93%; animation-delay: -7s; animation-duration: 16s; }
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  12% { transform: scale(1.14); }
-  24% { transform: scale(1); }
-  36% { transform: scale(1.08); }
-}
-
-@keyframes card-arrival {
-  from { opacity: 0; transform: translateY(1.5rem) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes float-up {
-  from { transform: translateY(0) rotate(0deg); opacity: 0; }
-  12% { opacity: 1; }
-  to { transform: translateY(-115vh) rotate(35deg); opacity: 0; }
-}
-
-@media (max-width: 420px) {
-  .love-page {
-    padding: 1rem;
-  }
-
-  .love-card {
-    padding-inline: 1.25rem;
-    border-radius: 1.65rem;
-  }
-}
-
-@media (max-height: 620px) and (orientation: landscape) {
-  .love-page {
-    padding-block: 1rem;
-  }
-
-  .love-card {
-    padding-top: 3.3rem;
-    padding-bottom: 1.5rem;
-  }
-
-  .divider {
-    margin-block: 1rem;
-  }
-
-  .signature {
-    margin-top: 1rem;
-  }
+@media (min-width: 700px) {
+  .wedding-details { padding-top: 7rem; }
+  .location-block { padding: 3.2rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
 }
