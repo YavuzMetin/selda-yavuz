@@ -80,6 +80,12 @@ function Invitation() {
         >
           <span className="envelope-shadow" aria-hidden="true" />
           <span className="envelope">
+            <span className="reveal-piece reveal-piece--bouquet" aria-hidden="true">
+              <img src="/wedding-bouquet.png" alt="" />
+            </span>
+            <span className="reveal-piece reveal-piece--photo" aria-hidden="true">
+              <img src="/6F1B7121.jpg" alt="" />
+            </span>
             <span className="invitation-card">
               <span className="card-art" aria-hidden="true" />
               <span className="card-content">

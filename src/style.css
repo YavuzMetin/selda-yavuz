@@ -142,6 +142,25 @@ button { color: inherit; font: inherit; }
 .wax-seal b { font-size: .65em; font-weight: 400; }
 .wax-seal i { font-style: italic; }
 
+.reveal-piece {
+  position: absolute;
+  top: -12%;
+  left: 50%;
+  z-index: 3;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 1s cubic-bezier(.18,.75,.22,1) .8s,
+    opacity .35s ease .8s,
+    visibility 0s linear 1.8s;
+}
+
+.reveal-piece img { display: block; width: 100%; height: auto; }
+.reveal-piece--bouquet { width: 48%; transform: translate(-50%, 55%) scale(.45) rotate(0deg); transform-origin: 70% 80%; }
+.reveal-piece--photo { width: 42%; transform: translate(-50%, 55%) scale(.45) rotate(0deg); transform-origin: 30% 80%; }
+
 .invitation-card {
   position: absolute;
   z-index: 2;
@@ -149,7 +168,7 @@ button { color: inherit; font: inherit; }
   bottom: 3%;
   left: 7%;
   display: block;
-  height: 138%;
+  height: 172%;
   overflow: hidden;
   visibility: hidden;
   opacity: 0;
@@ -164,8 +183,8 @@ button { color: inherit; font: inherit; }
     visibility 0s linear 1.07s;
 }
 
-.card-art { position: absolute; inset: 0; background: url('/wedding-botanicals.png') center/cover no-repeat; opacity: .95; }
-.card-content { position: absolute; inset: 0; display: flex; align-items: center; flex-direction: column; justify-content: center; padding: 12% 11%; text-align: center; }
+.card-art { position: absolute; inset: 0; background: url('/wedding-invitation-tulips.png') center/cover no-repeat; opacity: 1; }
+.card-content { position: absolute; inset: 0; display: none; align-items: center; flex-direction: column; justify-content: center; padding: 12% 11%; text-align: center; }
 .card-overline { margin-bottom: 6%; color: #8b7762; font-size: clamp(.38rem, 1.55vw, .62rem); font-weight: 600; letter-spacing: .3em; text-transform: uppercase; }
 .names { display: flex; align-items: center; flex-direction: column; color: #46503f; font-family: 'Cormorant Garamond', Georgia, serif; line-height: .78; }
 .names i { font-size: clamp(2.15rem, 9vw, 4.15rem); font-weight: 500; }
@@ -182,11 +201,21 @@ button { color: inherit; font: inherit; }
 
 .is-open .envelope-flap { z-index: 1; transform: rotateX(180deg); transition: transform .8s cubic-bezier(.3,.1,.2,1), z-index 0s .35s; }
 .is-open .wax-seal { opacity: 0; transform: translate(-50%, -95%) scale(.45) rotate(12deg); transition-delay: 0s; }
+.is-open .reveal-piece {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    transform 1s cubic-bezier(.18,.75,.22,1) .8s,
+    opacity .35s ease .8s,
+    visibility 0s linear .8s;
+}
+.is-open .reveal-piece--bouquet { transform: translate(-115%, -34%) scale(1) rotate(-18deg); }
+.is-open .reveal-piece--photo { transform: translate(18%, -28%) scale(1) rotate(9deg); }
 .is-open .invitation-card {
   z-index: 5;
   visibility: visible;
   opacity: 1;
-  transform: translateY(-84%);
+  transform: translateY(-65%);
   transition:
     transform 1s cubic-bezier(.2,.7,.2,1) .65s,
     opacity .18s ease .65s,
@@ -314,12 +343,36 @@ button { color: inherit; font: inherit; }
     width: min(76vw, 20.5rem);
   }
 
+  .invitation-card {
+    right: 4%;
+    left: 4%;
+    height: 183%;
+  }
+
+  .reveal-piece--bouquet {
+    top: -108%;
+    width: 43%;
+  }
+
+  .reveal-piece--photo {
+    top: -150%;
+    width: 38%;
+  }
+
+  .is-open .reveal-piece--bouquet {
+    transform: translate(-155%, -4%) scale(1) rotate(-20deg);
+  }
+
+  .is-open .reveal-piece--photo {
+    transform: translate(72%, 3%) scale(1) rotate(10deg);
+  }
+
   .is-open .envelope-scene {
     transform: translateY(clamp(4rem, 10svh, 5.75rem));
   }
 
   .is-open .invitation-card {
-    transform: translateY(-24%);
+    transform: translateY(-4%);
   }
 
   .is-open .intro {
