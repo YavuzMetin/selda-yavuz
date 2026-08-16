@@ -44,8 +44,9 @@ button { color: inherit; font: inherit; }
   scroll-snap-stop: always;
   padding: clamp(1rem, 4vh, 2.5rem) 1rem;
   background:
-    radial-gradient(circle at 50% 48%, rgba(255,255,255,.9) 0, rgba(247,243,235,.7) 34%, transparent 65%),
-    linear-gradient(135deg, #eee8dc, #ddd3c3);
+    radial-gradient(circle at 50% 48%, rgba(255,255,255,.76) 0, rgba(247,243,235,.48) 38%, transparent 70%),
+    linear-gradient(rgba(232,224,211,.28), rgba(218,207,190,.42)),
+    url('/wedding-details-background.png') center/cover no-repeat;
 }
 
 .paper-noise {
@@ -73,6 +74,7 @@ button { color: inherit; font: inherit; }
 .intro { align-self: end; margin-bottom: clamp(1rem, 3vh, 2rem); text-align: center; transition: .7s ease; }
 .kicker, .hint, .after-note { margin: 0; font-size: .62rem; letter-spacing: .26em; text-transform: uppercase; }
 .kicker { color: #78806f; }
+.intro .kicker { color: #423d35; font-weight: 700; text-shadow: 0 1px .35rem rgba(255,255,255,.9); }
 .intro h1 { margin: .15rem 0 .45rem; color: #393f36; font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(2.7rem, 8vw, 4.8rem); font-weight: 400; line-height: 1; }
 .hint { color: #9b8268; font-size: .55rem; animation: breathe 2.2s ease-in-out infinite; }
 
@@ -159,7 +161,11 @@ button { color: inherit; font: inherit; }
 
 .reveal-piece img { display: block; width: 100%; height: auto; }
 .reveal-piece--bouquet { width: 48%; transform: translate(-50%, 55%) scale(.45) rotate(0deg); transform-origin: 70% 80%; }
-.reveal-piece--photo { width: 42%; transform: translate(-50%, 55%) scale(.45) rotate(0deg); transform-origin: 30% 80%; }
+.reveal-piece--photo { width: 42%; overflow: hidden; background: #eee8dd; border: .3rem solid #f8f4ec; box-shadow: 0 .8rem 1.5rem rgba(49,43,35,.2); transform: translate(-50%, 55%) scale(.45) rotate(0deg); transform-origin: 30% 80%; }
+.reveal-piece--photo img { aspect-ratio: 2 / 3; height: 100%; object-fit: cover; }
+.reveal-piece--photo-left, .reveal-piece--photo-right { top: 12%; width: 34%; }
+.reveal-piece--photo-left { transform-origin: 85% 15%; }
+.reveal-piece--photo-right { transform-origin: 15% 15%; }
 
 .invitation-card {
   position: absolute;
@@ -194,10 +200,12 @@ button { color: inherit; font: inherit; }
 .date { color: #424a3e; font-family: 'Cormorant Garamond', serif; font-size: clamp(.9rem, 3.2vw, 1.3rem); font-weight: 500; letter-spacing: .06em; }
 .details { margin-top: 2%; color: #777268; font-size: clamp(.42rem, 1.55vw, .6rem); letter-spacing: .1em; line-height: 1.65; text-transform: uppercase; }
 
-.after-note { display: flex; align-self: start; align-items: center; flex-direction: column; gap: .15rem; margin-top: clamp(1.2rem, 4vh, 2.4rem); padding: .5rem; color: #7d7569; border: 0; background: none; font-size: .5rem; text-align: center; transition: .5s ease; }
+.after-note { position: relative; z-index: 10; display: flex; align-self: start; align-items: center; flex-direction: column; gap: .15rem; margin-top: clamp(1.2rem, 4vh, 2.4rem); padding: .5rem .8rem; color: #61584e; border: 0; background: none; font-size: .5rem; text-align: center; transition: .5s ease; }
 .after-note:disabled { margin-top: .65rem; color: #665e53; font-size: clamp(.68rem, 2.8vw, .82rem); font-weight: 600; cursor: default; }
 .after-note:not(:disabled) { cursor: pointer; }
+.after-note:not(:disabled) span { font-size: clamp(.62rem, 2.4vw, .76rem); font-weight: 600; letter-spacing: .18em; }
 .after-note i { font-family: Georgia, serif; font-size: 1.4rem; font-style: normal; line-height: .65; animation: float-down 1.7s ease-in-out infinite; }
+.is-open .after-note { transform: translateY(clamp(1.5rem, 4vh, 2.4rem)); }
 
 .is-open .envelope-flap { z-index: 1; transform: rotateX(180deg); transition: transform .8s cubic-bezier(.3,.1,.2,1), z-index 0s .35s; }
 .is-open .wax-seal { opacity: 0; transform: translate(-50%, -95%) scale(.45) rotate(12deg); transition-delay: 0s; }
@@ -210,7 +218,9 @@ button { color: inherit; font: inherit; }
     visibility 0s linear .8s;
 }
 .is-open .reveal-piece--bouquet { transform: translate(-115%, -34%) scale(1) rotate(-18deg); }
-.is-open .reveal-piece--photo { transform: translate(18%, -28%) scale(1) rotate(9deg); }
+.is-open .reveal-piece--photo-top { transform: translate(18%, -28%) scale(1) rotate(9deg); }
+.is-open .reveal-piece--photo-left { transform: translate(-135%, 55%) scale(1) rotate(-11deg); }
+.is-open .reveal-piece--photo-right { transform: translate(35%, 70%) scale(1) rotate(11deg); }
 .is-open .invitation-card {
   z-index: 5;
   visibility: visible;
@@ -223,7 +233,7 @@ button { color: inherit; font: inherit; }
 }
 .is-open .envelope-scene { transform: translateY(clamp(4.25rem, 12svh, 7rem)); }
 .is-open .envelope-shadow { transform: scaleX(1.08); opacity: .65; }
-.is-open .intro { opacity: .3; transform: translateY(-.35rem); }
+.is-open .intro { opacity: .72; transform: translateY(-.35rem); }
 
 @keyframes breathe { 50% { opacity: .42; } }
 @keyframes float-down { 50% { transform: translateY(.28rem); } }
@@ -241,8 +251,8 @@ button { color: inherit; font: inherit; }
   overflow: hidden;
   color: #3f453b;
   background:
-    linear-gradient(rgba(248,245,237,.93), rgba(238,231,218,.97)),
-    url('/wedding-botanicals.png') center/cover;
+    linear-gradient(rgba(248,245,237,.65), rgba(238,231,218,.78)),
+    url('/wedding-details-background-v3.png') center/cover no-repeat;
   text-align: center;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -286,17 +296,27 @@ button { color: inherit; font: inherit; }
 .venue-note strong { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.75rem; font-weight: 500; }
 .venue-note p { margin: 0; color: #81786d; font-size: clamp(.56rem, 2.35vw, .68rem); letter-spacing: .035em; line-height: 1.55; }
 
+.photo-share-card { display: flex; width: min(100%, 25rem); min-height: 4rem; align-items: center; gap: .8rem; margin-top: 1rem; padding: .7rem 1rem; color: #6e494d; background: linear-gradient(135deg, rgba(246,221,220,.96), rgba(237,202,204,.9)); border: 1px solid rgba(157,96,103,.22); box-shadow: 0 .55rem 1.2rem rgba(119,73,77,.12); text-align: left; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+.photo-share-card > span { display: grid; width: 2.2rem; aspect-ratio: 1; flex: 0 0 auto; place-items: center; color: #fff8f4; background: #a7666d; border-radius: 50%; }
+.photo-share-card svg { width: 1.12rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.photo-share-card div { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.photo-share-card small { margin-bottom: .18rem; color: #9a6d70; font-size: .48rem; font-weight: 600; letter-spacing: .17em; text-transform: uppercase; }
+.photo-share-card strong { overflow: hidden; font-family: 'Cormorant Garamond', serif; font-size: 1.18rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.photo-share-card > i { color: #986067; font-size: 1.1rem; font-style: normal; }
+.photo-share-card:hover, .photo-share-card:focus-visible { box-shadow: 0 .8rem 1.5rem rgba(119,73,77,.18); transform: translateY(-2px); }
+
 .page-cue { display: flex; align-items: center; flex-direction: column; gap: .05rem; margin-top: auto; padding: .5rem 1rem; color: #877b6d; border: 0; background: none; font-size: .5rem; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; }
+.page-cue span { font-size: clamp(.62rem, 2.4vw, .76rem); font-weight: 600; letter-spacing: .18em; }
 .page-cue i { font-family: Georgia, serif; font-size: 1.35rem; font-style: normal; line-height: .7; animation: float-down 1.7s ease-in-out infinite; }
 
-.location-page { position: relative; display: flex; height: 100vh; height: 100svh; min-height: 100vh; min-height: 100svh; align-items: center; flex-direction: column; justify-content: center; padding: 3.2rem 1rem 0; overflow: hidden; background: linear-gradient(145deg, #dde2d8, #cbd3c5); scroll-snap-align: start; scroll-snap-stop: always; }
-.location-page::before { position: absolute; top: -12rem; right: -11rem; width: 25rem; aspect-ratio: 1; background: rgba(255,255,255,.28); border-radius: 50%; content: ''; }
-.location-block { position: relative; z-index: 1; width: min(100%, 31rem); padding: 2.4rem 1rem 1.5rem; background: #f5f0e9; color: #485044; box-shadow: 0 1.4rem 3rem rgba(61,62,50,.18); }
-.location-block .kicker { color: #9b846d; font-size: .52rem; }
-.location-block h3 { margin: .55rem 0 .7rem; font-family: 'Cormorant Garamond', serif; font-size: 2.3rem; font-weight: 400; }
-.location-block > p:not(.kicker) { max-width: 18rem; margin: 0 auto 1.6rem; color: #817b72; font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.5; }
+.location-page { position: relative; display: flex; height: 100vh; height: 100svh; min-height: 100vh; min-height: 100svh; align-items: center; flex-direction: column; justify-content: center; padding: 3.2rem 1rem 0; overflow: hidden; background: linear-gradient(rgba(16,25,19,.16), rgba(12,18,14,.38)), url('/location-background.png') center/cover no-repeat; scroll-snap-align: start; scroll-snap-stop: always; }
+.location-page::before { position: absolute; inset: -3px; background: radial-gradient(circle at 50% 42%, rgba(14,20,16,.08) 20%, rgba(8,13,10,.28) 100%); backdrop-filter: blur(1.4px); -webkit-backdrop-filter: blur(1.4px); content: ''; pointer-events: none; }
+.location-block { position: relative; z-index: 1; width: min(92%, 28rem); padding: 1rem .25rem; color: #f8f0e5; background: none; text-align: center; }
+.location-block .kicker { color: #e6c9a3; font-size: .52rem; font-weight: 600; text-shadow: 0 .15rem .45rem rgba(0,0,0,.72); }
+.location-block h3 { margin: .55rem 0 .7rem; color: #fff8ed; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.85rem, 7vw, 2.1rem); font-weight: 500; text-shadow: 0 .18rem .55rem rgba(0,0,0,.72); }
+.location-block > p:not(.kicker) { max-width: 18rem; margin: 0 auto 1.15rem; color: #f1e8dc; font-family: 'Cormorant Garamond', serif; font-size: .98rem; font-weight: 500; line-height: 1.45; text-shadow: 0 .15rem .45rem rgba(0,0,0,.78); }
 
-.map-preview { position: relative; display: block; width: 100%; aspect-ratio: 1.62; overflow: hidden; color: inherit; background: #eee9e2; border: 1px solid rgba(97,108,91,.16); border-radius: .8rem; box-shadow: inset 0 0 2rem rgba(255,255,255,.5); text-decoration: none; }
+.map-preview { position: relative; display: block; width: 100%; aspect-ratio: 1.78; overflow: hidden; color: inherit; background: rgba(238,233,226,.82); border: 1px solid rgba(97,108,91,.16); border-radius: .8rem; box-shadow: inset 0 0 2rem rgba(255,255,255,.5); text-decoration: none; }
 .map-preview svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .map-preview svg path { fill: none; stroke: #d5d8d3; stroke-width: 3; }
 .map-green { position: absolute; background: #dce6d1; opacity: .9; }
@@ -309,15 +329,13 @@ button { color: inherit; font: inherit; }
 .map-preview small { position: absolute; right: .55rem; bottom: .4rem; color: #888b85; font-size: .4rem; letter-spacing: .04em; }
 
 .directions-button { display: inline-flex; min-height: 3.3rem; align-items: center; justify-content: center; gap: .7rem; margin-top: 1.3rem; padding: .8rem 1.6rem; color: #f7f2e9; background: #697266; border-radius: 999px; font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; transition: transform .2s ease, background .2s ease; }
-.directions-button span { font-size: 1.05rem; transform: rotate(45deg); }
+.directions-button span { font-size: 1.15rem; line-height: 1; transform: rotate(-45deg); }
 .directions-button:hover, .directions-button:focus-visible { background: #4f594d; transform: translateY(-2px); }
 
-.location-page footer { display: flex; position: relative; z-index: 1; align-items: center; flex-direction: column; padding: 2.6rem 1rem 1.4rem; color: #53604e; font-family: 'Cormorant Garamond', serif; }
+.location-page footer { display: flex; position: relative; z-index: 1; align-items: center; flex-direction: column; padding: 2.6rem 1rem 1.4rem; color: #f6ecdd; font-family: 'Cormorant Garamond', serif; text-shadow: 0 .15rem .5rem rgba(0,0,0,.55); }
 .location-page footer span { font-size: 2rem; font-style: italic; line-height: .72; }
-.location-page footer i { margin: .3rem 0; color: #9e836a; font-size: 1rem; font-weight: 400; }
+.location-page footer i { margin: .3rem 0; color: #e7bb83; font-size: 1rem; font-weight: 400; }
 .location-page footer small { margin-top: 1rem; font-family: 'Montserrat', sans-serif; font-size: .48rem; letter-spacing: .28em; }
-
-.photo-page-link { display: block; margin-top: 1rem; color: #697266; font-family: 'Cormorant Garamond', serif; font-size: 1rem; text-underline-offset: .25rem; }
 
 .photos-page { position: relative; min-height: 100vh; min-height: 100svh; padding: 3rem 1rem; background: radial-gradient(circle at 50% 12%, rgba(255,255,255,.78), transparent 36%), linear-gradient(145deg, #e9e3d8, #d8d0c1); }
 .photos-noise { position: fixed; inset: 0; opacity: .2; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.17'/%3E%3C/svg%3E"); }
@@ -329,9 +347,12 @@ button { color: inherit; font: inherit; }
 .photo-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
 .photo-action { display: flex; min-height: 9rem; align-items: center; flex-direction: column; justify-content: center; padding: 1rem; color: #596254; background: #eee9e0; border: 1px solid rgba(102,112,95,.2); cursor: pointer; transition: transform .2s ease, background .2s ease; }
 .photo-action--camera { color: #f8f4ec; background: #6b7566; }
+.photo-action--disabled { cursor: wait; opacity: .55; }
 .photo-action:hover { transform: translateY(-2px); }
+.photo-action--disabled:hover { transform: none; }
 .photo-action input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
-.photo-action-icon { margin-bottom: .45rem; font-size: 1.65rem; }
+.photo-action-icon { display: grid; width: 2rem; aspect-ratio: 1; margin-bottom: .45rem; place-items: center; }
+.photo-action-icon svg { width: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.55; }
 .photo-action strong { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 500; }
 .photo-action small { margin-top: .25rem; font-size: .5rem; letter-spacing: .1em; opacity: .75; text-transform: uppercase; }
 .photo-selection { margin-top: 1.8rem; text-align: left; }
@@ -346,6 +367,11 @@ button { color: inherit; font: inherit; }
 .photo-status--pending { background: transparent; }
 .photo-status--success { background: rgba(56,105,66,.65); }
 .photo-status--error { background: rgba(142,65,58,.64); }
+.upload-progress { margin-top: 1.25rem; color: #65705f; text-align: left; }
+.upload-progress > div { display: flex; justify-content: space-between; margin-bottom: .45rem; font-size: .63rem; letter-spacing: .08em; }
+.upload-progress > div strong { font-weight: 600; }
+.upload-progress > i { display: block; height: .38rem; overflow: hidden; background: #ddd8ce; border-radius: 999px; }
+.upload-progress > i span { display: block; height: 100%; background: #71806b; border-radius: inherit; transition: width .3s ease; }
 .upload-button { width: 100%; min-height: 3.65rem; margin-top: 1.5rem; color: #f8f4ec; background: #687263; border: 0; border-radius: 999px; font-size: .64rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; cursor: pointer; }
 .upload-button:disabled { opacity: .42; cursor: not-allowed; }
 .upload-message { margin: 1.25rem 0 -.65rem; font-size: .75rem; line-height: 1.45; }
@@ -368,6 +394,18 @@ button { color: inherit; font: inherit; }
 
 @keyframes section-reveal { from { opacity: 0; transform: translateY(1.5rem); } }
 
+@media (max-height: 900px) {
+  .wedding-details { padding-top: 3.3rem; padding-bottom: 1.25rem; }
+  .section-flower { margin-bottom: .7rem; }
+  .wedding-details h2 { margin: .5rem 0 1.2rem; }
+  .detail-label { margin-top: 1rem; }
+  .detail-label--address { margin-top: .65rem; }
+  .event-card { padding-block: .8rem; }
+  .photo-share-card { min-height: 3.5rem; margin-top: .65rem; padding-block: .55rem; }
+  .venue-note strong { font-size: 1.55rem; }
+  .page-cue { margin-top: .25rem; padding-block: .3rem; }
+}
+
 @media (max-height: 700px) {
   .envelope-hero { padding-block: .7rem; }
   .intro { margin-bottom: .4rem; }
@@ -381,6 +419,7 @@ button { color: inherit; font: inherit; }
   .event-card { padding-block: .75rem; }
   .event-card span { font-size: 2.55rem; }
   .venue-note strong { font-size: 1.45rem; }
+  .photo-share-card { min-height: 3.4rem; margin-top: .55rem; padding-block: .5rem; }
   .page-cue { margin-top: .2rem; }
   .location-page { justify-content: flex-start; padding-top: 1.7rem; }
   .location-block { padding-top: 1.5rem; }
@@ -403,17 +442,31 @@ button { color: inherit; font: inherit; }
     width: 43%;
   }
 
-  .reveal-piece--photo {
+  .reveal-piece--photo-top {
     top: -150%;
     width: 38%;
+  }
+
+  .reveal-piece--photo-left,
+  .reveal-piece--photo-right {
+    top: 20%;
+    width: 34%;
   }
 
   .is-open .reveal-piece--bouquet {
     transform: translate(-155%, -4%) scale(1) rotate(-20deg);
   }
 
-  .is-open .reveal-piece--photo {
+  .is-open .reveal-piece--photo-top {
     transform: translate(72%, 3%) scale(1) rotate(10deg);
+  }
+
+  .is-open .reveal-piece--photo-left {
+    transform: translate(-145%, 72%) scale(1) rotate(-12deg);
+  }
+
+  .is-open .reveal-piece--photo-right {
+    transform: translate(45%, 88%) scale(1) rotate(12deg);
   }
 
   .is-open .envelope-scene {
@@ -425,13 +478,13 @@ button { color: inherit; font: inherit; }
   }
 
   .is-open .intro {
-    opacity: .18;
+    opacity: .68;
   }
 }
 
 @media (min-width: 700px) {
   .wedding-details { padding-top: 7rem; }
-  .location-block { padding: 3.2rem; }
+  .location-block { padding: 1rem .25rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

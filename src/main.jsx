@@ -6,6 +6,8 @@ const PHOTO_UPLOAD_URL = import.meta.env.VITE_PHOTO_UPLOAD_URL || '/api/photos'
 const MAX_UPLOAD_SIZE = 4 * 1024 * 1024
 const MAX_SOURCE_SIZE = 15 * 1024 * 1024
 const MAX_IMAGE_EDGE = 3000
+const MAX_PHOTO_COUNT = 25
+const SUCCESS_VISIBLE_MS = 4000
 
 function canvasToBlob(canvas, quality) {
   return new Promise((resolve, reject) => {
@@ -131,8 +133,14 @@ function Invitation() {
             <span className="reveal-piece reveal-piece--bouquet" aria-hidden="true">
               <img src="/wedding-bouquet.png" alt="" />
             </span>
-            <span className="reveal-piece reveal-piece--photo" aria-hidden="true">
-              <img src="/6F1B7121.jpg" alt="" />
+            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-top" aria-hidden="true">
+              <img src="/2.jpg" alt="" />
+            </span>
+            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-left" aria-hidden="true">
+              <img src="/1.jpg" alt="" />
+            </span>
+            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-right" aria-hidden="true">
+              <img src="/3.jpg" alt="" />
             </span>
             <span className="invitation-card">
               <span className="card-art" aria-hidden="true" />
@@ -162,7 +170,7 @@ function Invitation() {
           disabled={!isOpen}
           onClick={() => document.querySelector('#wedding-details')?.scrollIntoView({ behavior: 'smooth' })}
         >
-          {isOpen ? <><span>Aşağı kaydır</span><i aria-hidden="true">⌄</i></> : 'Zarfı açmak için dokun'}
+          {isOpen ? <><span>Detaylar için kaydır</span><i aria-hidden="true">⌄</i></> : 'Zarfı açmak için dokun'}
         </button>
       </section>
 
@@ -181,6 +189,14 @@ function Invitation() {
               <p className="event-time"><span>19.00</span><small>Düğün Töreni</small></p>
             </div>
 
+            <a className="photo-share-card" href="/photos">
+              <span aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 6.5h3l1.4-2h7.2l1.4 2h3v12H4z" /><circle cx="12" cy="12.5" r="3.5" /></svg>
+              </span>
+              <div><small>Sizin gözünüzden</small><strong>Düğün fotoğraflarını paylaş</strong></div>
+              <i aria-hidden="true">→</i>
+            </a>
+
             <div className="detail-label detail-label--address"><i /><span>Adres</span><i /></div>
             <div className="venue-note">
               <strong>Onur Kır Bahçesi</strong>
@@ -192,14 +208,14 @@ function Invitation() {
               type="button"
               onClick={() => document.querySelector('#location')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <span>Konum bilgisi</span><i aria-hidden="true">⌄</i>
+              <span>Konum için kaydır</span><i aria-hidden="true">⌄</i>
             </button>
           </section>
 
           <section className="location-page" id="location">
             <div className="location-block">
             <p className="kicker">Buluşma noktası</p>
-            <h3>Düğün Mekânı</h3>
+            <h3>Bu Güzel Günün Konumu</h3>
             <p>Yol tarifi ve konum bilgisi için haritayı açabilirsiniz.</p>
             <a
               className="map-preview"
@@ -221,9 +237,8 @@ function Invitation() {
               <small>Google Maps</small>
             </a>
             <a className="directions-button" href="https://maps.app.goo.gl/JE2YZW8E69W2DB379" target="_blank" rel="noreferrer">
-              <span aria-hidden="true">◇</span> Yol Tarifi Al
+              <span aria-hidden="true">➤</span> Yol Tarifi Al
             </a>
-            <a className="photo-page-link" href="/photos">Düğün fotoğraflarını paylaş</a>
             </div>
 
             <footer><span>Selda</span><i>&amp;</i><span>Yavuz</span><small>26 · 09 · 2026</small></footer>
@@ -238,21 +253,50 @@ function Photos() {
   const [photos, setPhotos] = useState([])
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
+  const [progress, setProgress] = useState({ uploaded: 0, total: 0 })
   const photosRef = useRef(photos)
+  const cleanupTimersRef = useRef([])
 
   useEffect(() => {
     photosRef.current = photos
   }, [photos])
 
-  useEffect(() => () => photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.preview)), [])
+  useEffect(() => () => {
+    cleanupTimersRef.current.forEach((timer) => window.clearTimeout(timer))
+    photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.preview))
+  }, [])
+
+  useEffect(() => {
+    if (status !== 'uploading') return undefined
+    const warnBeforeLeaving = (event) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    window.addEventListener('beforeunload', warnBeforeLeaving)
+    return () => window.removeEventListener('beforeunload', warnBeforeLeaving)
+  }, [status])
+
+  function removeUploadedPhoto(id) {
+    setPhotos((current) => {
+      const uploaded = current.find((photo) => photo.id === id && photo.uploadStatus === 'success')
+      if (!uploaded) return current
+      URL.revokeObjectURL(uploaded.preview)
+      return current.filter((photo) => photo.id !== id)
+    })
+  }
+
+  function scheduleUploadedPhotoCleanup(id) {
+    const timer = window.setTimeout(() => removeUploadedPhoto(id), SUCCESS_VISIBLE_MS)
+    cleanupTimersRef.current.push(timer)
+  }
 
   function addPhotos(event) {
     const selected = Array.from(event.target.files || [])
     event.target.value = ''
 
     if (!selected.length) return
-    if (photos.length + selected.length > 10) {
-      setMessage('Tek seferde en fazla 10 fotoğraf ekleyebilirsiniz.')
+    if (photos.length + selected.length > MAX_PHOTO_COUNT) {
+      setMessage(`Tek seferde en fazla ${MAX_PHOTO_COUNT} fotoğraf ekleyebilirsiniz.`)
       return
     }
 
@@ -264,6 +308,7 @@ function Photos() {
 
     setMessage('')
     setStatus('idle')
+    setProgress({ uploaded: 0, total: 0 })
     setPhotos((current) => [
       ...current,
       ...selected.map((file) => ({
@@ -295,6 +340,7 @@ function Photos() {
 
     setStatus('uploading')
     setMessage('Fotoğraflarınız sırayla yükleniyor…')
+    setProgress({ uploaded: 0, total: waitingPhotos.length })
     let failedCount = 0
 
     for (const photo of waitingPhotos) {
@@ -323,6 +369,8 @@ function Photos() {
         setPhotos((current) => current.map((item) => (
           item.id === photo.id ? { ...item, uploadStatus: 'success', uploadNote: 'Yüklendi' } : item
         )))
+        setProgress((current) => ({ ...current, uploaded: current.uploaded + 1 }))
+        scheduleUploadedPhotoCleanup(photo.id)
       } catch {
         failedCount += 1
         setPhotos((current) => current.map((item) => (
@@ -351,23 +399,27 @@ function Photos() {
         <p className="photos-intro">Bu güzel günden yakaladığınız kareleri bizimle paylaşın. Yüklediğiniz fotoğrafları yalnızca Selda ve Yavuz görebilir.</p>
 
         <div className="photo-actions">
-          <label className="photo-action photo-action--camera">
-            <span className="photo-action-icon" aria-hidden="true">◎</span>
+          <label className={`photo-action photo-action--camera${status === 'uploading' ? ' photo-action--disabled' : ''}`}>
+            <span className="photo-action-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 6.5h3l1.4-2h7.2l1.4 2h3v12H4z" /><circle cx="12" cy="12.5" r="3.5" /></svg>
+            </span>
             <strong>Fotoğraf Çek</strong>
             <small>Kameranı aç</small>
-            <input type="file" accept="image/*" capture="environment" onChange={addPhotos} />
+            <input type="file" accept="image/*" capture="environment" disabled={status === 'uploading'} onChange={addPhotos} />
           </label>
-          <label className="photo-action">
-            <span className="photo-action-icon" aria-hidden="true">▧</span>
+          <label className={`photo-action${status === 'uploading' ? ' photo-action--disabled' : ''}`}>
+            <span className="photo-action-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.5" /><circle cx="14.5" cy="9.5" r="1.5" /><path d="m6 17 4-4 3 3 2-2 3 3" /><path d="M3 8v11a2 2 0 0 0 2 2h11" /></svg>
+            </span>
             <strong>Galeriden Seç</strong>
-            <small>En fazla 10 fotoğraf</small>
-            <input type="file" accept="image/*,.heic,.heif" multiple onChange={addPhotos} />
+            <small>En fazla 25 fotoğraf</small>
+            <input type="file" accept="image/*,.heic,.heif" multiple disabled={status === 'uploading'} onChange={addPhotos} />
           </label>
         </div>
 
         {photos.length > 0 && (
           <div className="photo-selection">
-            <div className="selection-heading"><strong>Seçilenler</strong><span>{photos.length}/10</span></div>
+            <div className="selection-heading"><strong>Seçilenler</strong><span>{photos.length}/{MAX_PHOTO_COUNT}</span></div>
             <div className="photo-grid">
               {photos.map((photo) => (
                 <figure key={photo.id}>
@@ -382,6 +434,13 @@ function Photos() {
                 </figure>
               ))}
             </div>
+          </div>
+        )}
+
+        {progress.total > 0 && (
+          <div className="upload-progress" role="progressbar" aria-valuemin="0" aria-valuemax={progress.total} aria-valuenow={progress.uploaded}>
+            <div><strong>{progress.uploaded} / {progress.total} yüklendi</strong><span>{Math.round((progress.uploaded / progress.total) * 100)}%</span></div>
+            <i><span style={{ width: `${(progress.uploaded / progress.total) * 100}%` }} /></i>
           </div>
         )}
 
