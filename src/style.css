@@ -309,6 +309,24 @@ button { color: inherit; font: inherit; }
   .location-page footer { padding-top: 1.5rem; }
 }
 
+@media (max-width: 600px) {
+  .envelope-scene {
+    width: min(76vw, 20.5rem);
+  }
+
+  .is-open .envelope-scene {
+    transform: translateY(clamp(4rem, 10svh, 5.75rem));
+  }
+
+  .is-open .invitation-card {
+    transform: translateY(-24%);
+  }
+
+  .is-open .intro {
+    opacity: .18;
+  }
+}
+
 @media (min-width: 700px) {
   .wedding-details { padding-top: 7rem; }
   .location-block { padding: 3.2rem; }
