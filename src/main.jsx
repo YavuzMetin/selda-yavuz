@@ -1,6 +1,54 @@
-import React, { StrictMode, useEffect, useState } from 'react'
+import React, { StrictMode, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './style.css'
+
+const PHOTO_UPLOAD_URL = import.meta.env.VITE_PHOTO_UPLOAD_URL || '/api/photos'
+const MAX_UPLOAD_SIZE = 4 * 1024 * 1024
+const MAX_SOURCE_SIZE = 15 * 1024 * 1024
+const MAX_IMAGE_EDGE = 3000
+
+function canvasToBlob(canvas, quality) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('IMAGE_COMPRESSION_FAILED'))),
+      'image/jpeg',
+      quality,
+    )
+  })
+}
+
+async function compressPhoto(file) {
+  if (file.size <= MAX_UPLOAD_SIZE) return file
+
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+  let scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height))
+  let quality = 0.9
+
+  try {
+    while (scale >= 0.35) {
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale))
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale))
+      const context = canvas.getContext('2d')
+      context.fillStyle = '#fff'
+      context.fillRect(0, 0, canvas.width, canvas.height)
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+
+      const blob = await canvasToBlob(canvas, quality)
+      if (blob.size <= MAX_UPLOAD_SIZE) {
+        const name = file.name.replace(/\.[^.]+$/, '') || 'fotograf'
+        return new File([blob], `${name}.jpg`, { type: 'image/jpeg', lastModified: file.lastModified })
+      }
+
+      if (quality > 0.62) quality -= 0.08
+      else scale *= 0.82
+    }
+  } finally {
+    bitmap.close()
+  }
+
+  throw new Error('IMAGE_TOO_LARGE_AFTER_COMPRESSION')
+}
 
 const invitation = {
   bride: 'Selda',
@@ -175,6 +223,7 @@ function Invitation() {
             <a className="directions-button" href="https://maps.app.goo.gl/JE2YZW8E69W2DB379" target="_blank" rel="noreferrer">
               <span aria-hidden="true">◇</span> Yol Tarifi Al
             </a>
+            <a className="photo-page-link" href="/photos">Düğün fotoğraflarını paylaş</a>
             </div>
 
             <footer><span>Selda</span><i>&amp;</i><span>Yavuz</span><small>26 · 09 · 2026</small></footer>
@@ -185,6 +234,171 @@ function Invitation() {
   )
 }
 
+function Photos() {
+  const [photos, setPhotos] = useState([])
+  const [status, setStatus] = useState('idle')
+  const [message, setMessage] = useState('')
+  const photosRef = useRef(photos)
+
+  useEffect(() => {
+    photosRef.current = photos
+  }, [photos])
+
+  useEffect(() => () => photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.preview)), [])
+
+  function addPhotos(event) {
+    const selected = Array.from(event.target.files || [])
+    event.target.value = ''
+
+    if (!selected.length) return
+    if (photos.length + selected.length > 10) {
+      setMessage('Tek seferde en fazla 10 fotoğraf ekleyebilirsiniz.')
+      return
+    }
+
+    const invalid = selected.find((file) => !file.type.startsWith('image/') || file.size > MAX_SOURCE_SIZE)
+    if (invalid) {
+      setMessage('Fotoğraflar JPG, PNG veya HEIC olmalı ve her biri 15 MB’tan küçük olmalı.')
+      return
+    }
+
+    setMessage('')
+    setStatus('idle')
+    setPhotos((current) => [
+      ...current,
+      ...selected.map((file) => ({
+        id: crypto.randomUUID(),
+        file,
+        preview: URL.createObjectURL(file),
+        uploadStatus: 'pending',
+        uploadNote: file.size > MAX_UPLOAD_SIZE ? 'Yüklemeden önce küçültülecek' : 'Yüklemeye hazır',
+      })),
+    ])
+  }
+
+  function removePhoto(id) {
+    setPhotos((current) => {
+      const removed = current.find((photo) => photo.id === id)
+      if (removed) URL.revokeObjectURL(removed.preview)
+      return current.filter((photo) => photo.id !== id)
+    })
+  }
+
+  async function uploadPhotos() {
+    const waitingPhotos = photos.filter((photo) => photo.uploadStatus !== 'success')
+    if (!waitingPhotos.length) return
+    if (!PHOTO_UPLOAD_URL) {
+      setStatus('error')
+      setMessage('Yükleme bağlantısı henüz yapılandırılmadı.')
+      return
+    }
+
+    setStatus('uploading')
+    setMessage('Fotoğraflarınız sırayla yükleniyor…')
+    let failedCount = 0
+
+    for (const photo of waitingPhotos) {
+      try {
+        const needsCompression = photo.file.size > MAX_UPLOAD_SIZE
+        setPhotos((current) => current.map((item) => (
+          item.id === photo.id
+            ? { ...item, uploadStatus: needsCompression ? 'preparing' : 'uploading', uploadNote: needsCompression ? 'Fotoğraf küçültülüyor…' : 'Yükleniyor…' }
+            : item
+        )))
+
+        const file = await compressPhoto(photo.file)
+        setPhotos((current) => current.map((item) => (
+          item.id === photo.id ? { ...item, uploadStatus: 'uploading', uploadNote: 'Yükleniyor…' } : item
+        )))
+
+        const response = await fetch(PHOTO_UPLOAD_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream',
+            'X-File-Name': encodeURIComponent(file.name),
+          },
+          body: file,
+        })
+        if (!response.ok) throw new Error('Upload failed')
+        setPhotos((current) => current.map((item) => (
+          item.id === photo.id ? { ...item, uploadStatus: 'success', uploadNote: 'Yüklendi' } : item
+        )))
+      } catch {
+        failedCount += 1
+        setPhotos((current) => current.map((item) => (
+          item.id === photo.id ? { ...item, uploadStatus: 'error', uploadNote: 'Yüklenemedi · Tekrar deneyin' } : item
+        )))
+      }
+    }
+
+    if (failedCount === 0) {
+      setStatus('success')
+      setMessage('Teşekkürler! Fotoğraflarınız bize ulaştı.')
+    } else {
+      setStatus('error')
+      setMessage(`${failedCount} fotoğraf yüklenemedi. Yalnızca başarısız olanları tekrar deneyebilirsiniz.`)
+    }
+  }
+
+  const waitingCount = photos.filter((photo) => photo.uploadStatus !== 'success').length
+
+  return (
+    <main className="photos-page">
+      <div className="photos-noise" aria-hidden="true" />
+      <section className="photos-card">
+        <p className="kicker">Anılarımızı birlikte biriktirelim</p>
+        <h1>Gözünüzden<br /><i>bizim hikâyemiz</i></h1>
+        <p className="photos-intro">Bu güzel günden yakaladığınız kareleri bizimle paylaşın. Yüklediğiniz fotoğrafları yalnızca Selda ve Yavuz görebilir.</p>
+
+        <div className="photo-actions">
+          <label className="photo-action photo-action--camera">
+            <span className="photo-action-icon" aria-hidden="true">◎</span>
+            <strong>Fotoğraf Çek</strong>
+            <small>Kameranı aç</small>
+            <input type="file" accept="image/*" capture="environment" onChange={addPhotos} />
+          </label>
+          <label className="photo-action">
+            <span className="photo-action-icon" aria-hidden="true">▧</span>
+            <strong>Galeriden Seç</strong>
+            <small>En fazla 10 fotoğraf</small>
+            <input type="file" accept="image/*,.heic,.heif" multiple onChange={addPhotos} />
+          </label>
+        </div>
+
+        {photos.length > 0 && (
+          <div className="photo-selection">
+            <div className="selection-heading"><strong>Seçilenler</strong><span>{photos.length}/10</span></div>
+            <div className="photo-grid">
+              {photos.map((photo) => (
+                <figure key={photo.id}>
+                  <img src={photo.preview} alt="Yüklenecek fotoğraf önizlemesi" />
+                  <span className={`photo-status photo-status--${photo.uploadStatus}`} aria-label={photo.uploadNote}>
+                    {photo.uploadStatus === 'success' ? '✓' : photo.uploadStatus === 'error' ? '!' : photo.uploadStatus === 'pending' ? '' : '···'}
+                  </span>
+                  <figcaption>{photo.uploadNote}</figcaption>
+                  {photo.uploadStatus !== 'success' && (
+                    <button type="button" disabled={status === 'uploading'} onClick={() => removePhoto(photo.id)} aria-label="Fotoğrafı kaldır">×</button>
+                  )}
+                </figure>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {message && <p className={`upload-message upload-message--${status}`} role="status">{message}</p>}
+        <button className={`upload-button${waitingCount ? ' upload-button--ready' : ''}`} type="button" disabled={!waitingCount || status === 'uploading'} onClick={uploadPhotos}>
+          {status === 'uploading' ? 'Sırayla yükleniyor…' : waitingCount ? `Fotoğrafları Gönder (${waitingCount})` : 'Tüm fotoğraflar yüklendi'}
+        </button>
+        <p className="privacy-note"><span aria-hidden="true">♢</span> Fotoğraflar herkese açık bir galeride yayınlanmaz.</p>
+      </section>
+    </main>
+  )
+}
+
+function App() {
+  return window.location.pathname.replace(/\/$/, '') === '/photos' ? <Photos /> : <Invitation />
+}
+
 createRoot(document.getElementById('root')).render(
-  <StrictMode><Invitation /></StrictMode>,
+  <StrictMode><App /></StrictMode>,
 )
