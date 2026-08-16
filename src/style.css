@@ -203,9 +203,32 @@ button { color: inherit; font: inherit; }
 .after-note { position: relative; z-index: 10; display: flex; align-self: start; align-items: center; flex-direction: column; gap: .15rem; margin-top: clamp(1.2rem, 4vh, 2.4rem); padding: .5rem .8rem; color: #61584e; border: 0; background: none; font-size: .5rem; text-align: center; transition: .5s ease; }
 .after-note:disabled { margin-top: .65rem; color: #665e53; font-size: clamp(.68rem, 2.8vw, .82rem); font-weight: 600; cursor: default; }
 .after-note:not(:disabled) { cursor: pointer; }
-.after-note:not(:disabled) span { font-size: clamp(.62rem, 2.4vw, .76rem); font-weight: 600; letter-spacing: .18em; }
+.after-note:not(:disabled) span { font-size: clamp(.62rem, 2.4vw, .76rem); font-weight: 700; letter-spacing: .18em; }
 .after-note i { font-family: Georgia, serif; font-size: 1.4rem; font-style: normal; line-height: .65; animation: float-down 1.7s ease-in-out infinite; }
-.is-open .after-note { transform: translateY(clamp(1.5rem, 4vh, 2.4rem)); }
+.is-open .after-note {
+  position: absolute;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 20;
+  min-width: min(78vw, 18rem);
+  min-height: 3rem;
+  align-self: auto;
+  justify-content: center;
+  flex-direction: row;
+  gap: .65rem;
+  margin: 0;
+  padding: .75rem 1.25rem;
+  color: #fffaf3;
+  border: 1px solid rgba(255,255,255,.42);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(126,73,73,.96), rgba(157,92,96,.96));
+  box-shadow: 0 .65rem 1.5rem rgba(55,35,31,.3), inset 0 1px rgba(255,255,255,.2);
+  transform: translateX(-50%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.is-open .after-note:active { transform: translateX(-50%) scale(.97); }
+.is-open .after-note i { color: #fffaf3; font-size: 1.25rem; }
 
 .is-open .envelope-flap { z-index: 1; transform: rotateX(180deg); transition: transform .8s cubic-bezier(.3,.1,.2,1), z-index 0s .35s; }
 .is-open .wax-seal { opacity: 0; transform: translate(-50%, -95%) scale(.45) rotate(12deg); transition-delay: 0s; }
