@@ -101,6 +101,7 @@ function Countdown() {
 
 function Invitation() {
   const [isOpen, setIsOpen] = useState(false)
+  const concealedRevealStyle = isOpen ? undefined : { visibility: 'hidden', opacity: 0 }
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -130,16 +131,16 @@ function Invitation() {
         >
           <span className="envelope-shadow" aria-hidden="true" />
           <span className="envelope">
-            <span className="reveal-piece reveal-piece--bouquet" aria-hidden="true">
+            <span className="reveal-piece reveal-piece--bouquet" aria-hidden="true" style={concealedRevealStyle}>
               <img src="/wedding-bouquet.png" alt="" />
             </span>
-            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-top" aria-hidden="true">
+            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-top" aria-hidden="true" style={concealedRevealStyle}>
               <img src="/2.jpg" alt="" />
             </span>
-            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-left" aria-hidden="true">
+            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-left" aria-hidden="true" style={concealedRevealStyle}>
               <img src="/1.jpg" alt="" />
             </span>
-            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-right" aria-hidden="true">
+            <span className="reveal-piece reveal-piece--photo reveal-piece--photo-right" aria-hidden="true" style={concealedRevealStyle}>
               <img src="/3.jpg" alt="" />
             </span>
             <span className="invitation-card">
